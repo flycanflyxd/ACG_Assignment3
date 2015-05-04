@@ -4,9 +4,11 @@
 class Camera
 {
 public:
-	vec3 position;
+	vec3 position[5];
 	vec3 direction;
 	float FOV;
+	float F = 1.0;
+	float aperture = F / 3.5;
 };
 
 #endif
