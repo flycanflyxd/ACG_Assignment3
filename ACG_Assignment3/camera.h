@@ -4,7 +4,8 @@
 class Camera
 {
 public:
-	vec3 position[5];
+	const static int CAMERA_NUM = 13;
+	vec3 position[CAMERA_NUM];
 	vec3 direction;
 	float FOV;
 	float F = 1.8;

@@ -12,6 +12,7 @@ bool init(Camera &camera, Viewport &viewport, Light &light, vector<Sphere> &sphe
 	Triangle triangle;
 	Plane plane;
 	Material material;
+	float angle = 360 / camera.CAMERA_NUM;
 
 	ifstream fin("hw3_input.txt");
 	if (!fin)
@@ -23,13 +24,17 @@ bool init(Camera &camera, Viewport &viewport, Light &light, vector<Sphere> &sphe
 		{
 		case 'E':
 			fin >> camera.position[0][0] >> camera.position[0][1] >> camera.position[0][2];
-			camera.position[1] = camera.position[0] + vec3(0.0, camera.aperture / 2, 0.0);
+			/*camera.position[1] = camera.position[0] + vec3(0.0, camera.aperture / 2, 0.0);
 			camera.position[2] = camera.position[0] - vec3(0.0, camera.aperture / 2, 0.0);
 			camera.position[3] = camera.position[0] - vec3(camera.aperture / 2, 0.0, 0.0);
-			camera.position[4] = camera.position[0] + vec3(camera.aperture / 2, 0.0, 0.0);
+			camera.position[4] = camera.position[0] + vec3(camera.aperture / 2, 0.0, 0.0);*/
 			break;
 		case 'V':
 			fin >> camera.direction[0] >> camera.direction[1] >> camera.direction[2];
+			for (int i = 0; i < camera.CAMERA_NUM - 1; i++)
+			{
+				camera.position[i + 1] = camera.position[0] + rotation3D(camera.direction, angle * i) * vec3(0.0, camera.aperture / 2, 0.0);
+			}
 			break;
 		case 'F':
 			fin >> camera.FOV;
@@ -275,9 +280,10 @@ Intersection shadow(Intersection point, Light light, vector<Sphere> &spheres, ve
 
 vec3 draw(Camera &camera, vec3 ray[], Light light, vector<Sphere> &spheres, vector<Triangle> &triangles, vector<Plane> &planes, CheckerBoard &checkerboard)
 {
-	Intersection intersection[5];
+	const int NUM_INTERSECTION = camera.CAMERA_NUM;
+	Intersection intersection[NUM_INTERSECTION];
 	vec3 rColor = vec3(0.0, 0.0, 0.0);
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < camera.CAMERA_NUM; i++)
 	{
 		intersection[i] = rayTracer(camera.position[i], ray[i], spheres, triangles, planes);
 		if (intersection[i].t != numeric_limits<float>::max())
@@ -288,7 +294,7 @@ vec3 draw(Camera &camera, vec3 ray[], Light light, vector<Sphere> &spheres, vect
 		}
 	}
 	
-	return rColor / 5;// intersection[0].material.color;
+	return rColor / camera.CAMERA_NUM;
 }
 
 void rayTracing(Camera &camera, Viewport &viewport, Light light, vector<Sphere> &spheres, vector<Triangle> &triangles, vector<Plane> &planes, CheckerBoard &checkerboard)
@@ -314,12 +320,13 @@ void rayTracing(Camera &camera, Viewport &viewport, Light light, vector<Sphere> 
 	viewport.startPosition = planeCenter - downCenter + leftCenter;
 	viewport.vectorWidth = (planeCenter - leftCenter) / (viewport.width * 0.5);
 	viewport.vectorHeight = (downCenter - planeCenter) / (viewport.height * 0.5);
-	vec3 ray[5];
+	const int RAY_NUM = camera.CAMERA_NUM;
+	vec3 ray[RAY_NUM];
 	for (int i = 0; i < viewport.height; i++)
 	{
 		for (int j = 0; j < viewport.width; j++)
 		{
-			for (int k = 0; k < 5; k++)
+			for (int k = 0; k < RAY_NUM; k++)
 			{
 				ray[k] = (viewport.startPosition + i * viewport.vectorHeight + j * viewport.vectorWidth - camera.position[k]).normalize();// normalize the vector
 			}
