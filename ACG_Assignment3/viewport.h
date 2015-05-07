@@ -7,7 +7,7 @@ class Viewport
 {
 public:
 	int width, height;
-	float distance = 3.3;
+	float distance = 300.0;
 	vec3 **pixel;
 	vec3 startPosition;
 	vec3 vectorWidth, vectorHeight;

@@ -40,13 +40,6 @@ bool init(Camera &camera, Viewport &viewport, Light &light, vector<Sphere> &sphe
 			viewport.pixel = new vec3*[viewport.height];
 			for (int i = 0; i < viewport.height; i++)
 				viewport.pixel[i] = new vec3[viewport.width];
-			for (int i = 0; i < viewport.height; i++)
-				for (int j = 0; j < viewport.width; j++)
-				{
-					viewport.pixel[i][j][0] = 0.3;
-					viewport.pixel[i][j][1] = 0.3;
-					viewport.pixel[i][j][2] = 0.3;
-				}
 			break;
 		case 'S':
 			for (int i = 0; i < 4; i++)
@@ -292,9 +285,6 @@ vec3 draw(Camera &camera, vec3 ray[], Light light, vector<Sphere> &spheres, vect
 			if (shadow(intersection[i], light, spheres, triangles, planes, checkerboard).material.color == vec3(0.0, 0.0, 0.0))
 				continue;
 			rColor += PhongShading(camera.position[i], intersection[i], light).material.color;
-			//intersection[0] = shadow(intersection[0], light, spheres, triangles, planes, checkerboard);
-			//intersection[0] = PhongShading(camera, intersection[0], light);
-			//intersection.material.color = prod(intersection.material.color, Reflection_Refraction(camera, light, ray, intersection, spheres, triangles, planes, checkerboard));
 		}
 	}
 	
