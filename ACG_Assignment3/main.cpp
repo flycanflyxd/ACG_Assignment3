@@ -1,5 +1,7 @@
 #include "draw.h"
 #include <iostream>
+#include <ctime>
+
 using namespace std;
 
 int main()
@@ -19,5 +21,7 @@ int main()
 	}
 	rayTracing(camera, viewport, light, spheres, triangles, planes, checkerboard);
 	output(viewport);
+	cout << "Time used: " << static_cast<double>(clock()) / CLK_TCK << endl;
+	system("pause");
 	return 0;
 }
